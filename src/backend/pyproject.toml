@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "backend"
+name = "pilot-api"
 version = "0.1.0"
 description = ""
 authors = ["grohith327 <grohith327@gmail.com>"]
@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 fastapi = "^0.115.5"
 numpy = "^2.1.0"
+supabase = "^2.10.0"
 
 [build-system]
 requires = ["poetry-core"]

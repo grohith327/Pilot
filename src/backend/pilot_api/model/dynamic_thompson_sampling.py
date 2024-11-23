@@ -1,7 +1,10 @@
-from backend.model.base_bandit_algorithm import BanditAlgorithm
-from backend.element import Element
+from pilot_api.model.base_bandit_algorithm import BanditAlgorithm
+from pilot_api.element import Element
 import numpy as np
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DynamicThompsonSampling(BanditAlgorithm):
@@ -18,6 +21,9 @@ class DynamicThompsonSampling(BanditAlgorithm):
                 element for element in self.elements.values() if element.is_active
             ]
             if len(active_elements) != 0:
+                logger.warning(
+                    f"Active elements found. Updating alpha and beta. Current number of active elements: {len(active_elements)}"
+                )
                 total_impressions = sum(
                     element.impression for element in active_elements
                 )
@@ -38,11 +44,13 @@ class DynamicThompsonSampling(BanditAlgorithm):
                 self.elements[new_element.id] = new_element
             else:
                 self.elements[new_element.id].is_active = True
+        logger.warning(f"Added {len(new_elements)} elements to the algorithm")
 
     def remove_elements(self, elements_to_remove: list[Element]):
         for element_to_remove in elements_to_remove:
             if element_to_remove.id in self.elements:
                 self.elements[element_to_remove.id].is_active = False
+        logger.warning(f"Removed {len(elements_to_remove)} elements from the algorithm")
 
     def get_recommendation(self) -> str:
         active_elements = {k: v for k, v in self.elements.items() if v.is_active}
