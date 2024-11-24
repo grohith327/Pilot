@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 
 
 class ProjectDbClient(BaseDbClient):
+    _instance = None
+
     def __init__(self, url: str, key: str):
         super().__init__(url, key, "projects")
 
@@ -50,3 +52,9 @@ class ProjectDbClient(BaseDbClient):
         except Exception as e:
             logger.error(f"Error inserting project data: {e}")
             raise e
+
+    @classmethod
+    def get_instance(cls, url: str, key: str):
+        if cls._instance is None:
+            cls._instance = cls(url, key)
+        return cls._instance

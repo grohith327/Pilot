@@ -10,6 +10,9 @@ class Element(BaseModel):
     creation_time: datetime
     last_updated_time: datetime
     is_active: bool
+    success_rate: float
+    impression: int
+    success_count: int
 
 
 class Project(BaseModel):
@@ -18,5 +21,11 @@ class Project(BaseModel):
     description: Optional[str] = None
     creation_time: datetime
     last_updated_time: datetime
-    elements: List[Element]
+    elements: List[Element] = []
     model_id: str
+
+
+class ProjectCreateRequest(BaseModel):
+    name: str
+    description: Optional[str] = None
+    elements: List[Element] = []
