@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from backend.element import Element
 
 
 class BanditAlgorithm(ABC):
@@ -12,11 +11,11 @@ class BanditAlgorithm(ABC):
         pass
 
     @abstractmethod
-    def save_checkpoint(self, checkpoint_path: str):
+    def save_checkpoint(self, checkpoint_path: str, model_id: str):
         pass
 
     @abstractmethod
-    def load_from_checkpoint(self, checkpoint_path: str):
+    def load_from_checkpoint(self, checkpoint_path: str, model_id: str):
         pass
 
     @abstractmethod

@@ -19,3 +19,4 @@ class Project(BaseModel):
     creation_time: datetime
     last_updated_time: datetime
     elements: List[Element]
+    model_id: str

@@ -3,6 +3,8 @@ from pilot_api.element import Element
 import numpy as np
 import json
 import logging
+import uuid
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +14,7 @@ class DynamicThompsonSampling(BanditAlgorithm):
         self.alpha = alpha
         self.beta = beta
         self.elements = {}
+        self.model_id = uuid.uuid4()
 
         self.add_elements(elements)
 
@@ -75,23 +78,30 @@ class DynamicThompsonSampling(BanditAlgorithm):
             "elements": {k: v.to_dict() for k, v in self.elements.items()},
             "alpha": self.alpha,
             "beta": self.beta,
+            "model_id": self.model_id,
         }
 
-        with open(checkpoint_path, "w") as f:
+        save_path = os.path.join(checkpoint_path, f"{self.model_id}.json")
+        logger.info(f"Saving checkpoint to {save_path}")
+        with open(save_path, "w") as f:
             json.dump(state, f)
 
-    def load_from_checkpoint(self, checkpoint_path: str):
-        with open(checkpoint_path, "r") as f:
+    def load_from_checkpoint(self, checkpoint_path: str, model_id: str):
+        load_path = os.path.join(checkpoint_path, f"{model_id}.json")
+        logger.info(f"Loading checkpoint from {load_path}")
+        with open(load_path, "r") as f:
             state = json.load(f)
 
         self.elements = {k: Element.from_dict(v) for k, v in state["elements"].items()}
         self.alpha = state["alpha"]
         self.beta = state["beta"]
+        self.model_id = state["model_id"]
 
     def get_stats(self) -> dict:
-        stats = {}
+        stats = {"model_id": self.model_id}
         for element_id, element in self.elements.items():
             stats[element_id] = {
+                "id": element_id,
                 "success_rate": element.get_success_rate(),
                 "impression": element.impression,
                 "success_count": element.success_count,

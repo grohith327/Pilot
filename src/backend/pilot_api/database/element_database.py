@@ -1,5 +1,4 @@
-from backend.database.base_client import BaseDbClient
-from backend.utils import is_valid_uuid
+from pilot_api.database.base_client import BaseDbClient
 import logging
 
 logger = logging.getLogger(__name__)
