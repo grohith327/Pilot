@@ -14,7 +14,7 @@ class ProjectDbClient(BaseDbClient):
         return (
             self.supabase_client.table(self.table_name)
             .select("*")
-            .eq("id", query.id)
+            .eq("id", query["id"])
             .execute()
         )
 

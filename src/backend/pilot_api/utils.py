@@ -19,8 +19,8 @@ def is_valid_uuid(uuid_to_test: str) -> bool:
         return False
 
 
-def get_current_time() -> datetime:
-    return datetime.now()
+def get_current_time() -> str:
+    return datetime.now().isoformat()
 
 
 def generate_uuid() -> str:

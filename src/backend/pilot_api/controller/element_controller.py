@@ -1,7 +1,12 @@
 from pilot_api.database.element_database import ElementDbClient
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.models import ElementCreateRequest
-from pilot_api.utils import is_string_empty, is_valid_uuid, generate_uuid
+from pilot_api.utils import (
+    is_string_empty,
+    is_valid_uuid,
+    generate_uuid,
+    get_current_time,
+)
 from fastapi import HTTPException
 
 
@@ -33,6 +38,7 @@ class ElementController:
             "description": element_create_request.description,
             "is_active": element_create_request.activate,
             "project_id": element_create_request.project_id,
+            "last_updated_time": get_current_time(),
         }
         self.element_db_client.insert_data(data)
         return {"id": data["id"]}
@@ -42,7 +48,7 @@ class ElementController:
             raise HTTPException(status_code=400, detail="Invalid element id")
 
         element_data = self.element_db_client.fetch_data({"id": element_id})
-        if element_data is None:
+        if element_data is None or len(element_data.data) == 0:
             raise HTTPException(status_code=404, detail="Element not found")
 
-        return element_data["data"]
+        return element_data.data[0]
