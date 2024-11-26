@@ -4,12 +4,16 @@ from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.database.element_database import ElementDbClient
 from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY
 from pilot_api.controller.project_controller import ProjectController
+from pilot_api.model.model_manager import ModelManager
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
 project_db_client = ProjectDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
 element_db_client = ElementDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
-project_controller = ProjectController(project_db_client, element_db_client)
+model_manager = ModelManager()
+project_controller = ProjectController(
+    project_db_client, element_db_client, model_manager
+)
 
 
 @router.post("/create")
