@@ -1,6 +1,5 @@
 from supabase import create_client, Client
 from abc import ABC, abstractmethod
-from pilot_api.utils import is_valid_uuid
 
 
 class BaseDbClient(ABC):
@@ -26,11 +25,3 @@ class BaseDbClient(ABC):
 
         assert "name" in data, "name is required"
         self._validate_name(data["name"])
-
-    def _validate_id(self, id):
-        assert isinstance(id, str), "id must be a string"
-        assert is_valid_uuid(id), "id must be a valid uuid"
-
-    def _validate_name(self, name):
-        assert isinstance(name, str), "name must be a string"
-        assert len(name) > 0, "name must be a non-empty string"

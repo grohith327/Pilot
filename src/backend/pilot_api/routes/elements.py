@@ -1,23 +1,26 @@
 from fastapi import APIRouter
-import os
+from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY
 from pilot_api.database.element_database import ElementDbClient
+from pilot_api.database.project_database import ProjectDbClient
+from pilot_api.models import ElementCreateRequest
+from pilot_api.controller.element_controller import ElementController
 
 
 router = APIRouter(prefix="/elements", tags=["elements"])
 
-URL = os.getenv("SUPABASE_URL")
-KEY = os.getenv("SUPABASE_ANON_KEY")
-element_db_client = ElementDbClient.get_instance(URL, KEY)
+element_db_client = ElementDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
+project_db_client = ProjectDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
+element_controller = ElementController(element_db_client, project_db_client)
 
 
 @router.post("/create")
-async def create_element():
-    pass
+async def create_element(element_create_request: ElementCreateRequest):
+    return await element_controller.create_element(element_create_request)
 
 
 @router.get("/{element_id}")
 async def get_element(element_id: str):
-    pass
+    return await element_controller.get_element(element_id)
 
 
 @router.put("/{element_id}")

@@ -2,24 +2,24 @@ from fastapi import APIRouter
 from pilot_api.models import ProjectCreateRequest
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.database.element_database import ElementDbClient
-import os
+from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY
+from pilot_api.controller.project_controller import ProjectController
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
-URL = os.getenv("SUPABASE_URL")
-KEY = os.getenv("SUPABASE_ANON_KEY")
-project_db_client = ProjectDbClient.get_instance(URL, KEY)
-element_db_client = ElementDbClient.get_instance(URL, KEY)
+project_db_client = ProjectDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
+element_db_client = ElementDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
+project_controller = ProjectController(project_db_client, element_db_client)
 
 
 @router.post("/create")
 async def create_project(project_create_request: ProjectCreateRequest):
-    pass
+    return await project_controller.create_project(project_create_request)
 
 
 @router.get("/{project_id}")
 async def get_project(project_id: str):
-    pass
+    return await project_controller.get_project(project_id)
 
 
 @router.put("/{project_id}")

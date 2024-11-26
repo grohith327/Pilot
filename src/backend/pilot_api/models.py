@@ -25,7 +25,14 @@ class Project(BaseModel):
     model_id: str
 
 
+class ElementCreateRequest(BaseModel):
+    name: str
+    description: Optional[str] = None
+    activate: Optional[bool] = False
+    project_id: Optional[str] = None
+
+
 class ProjectCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
-    elements: List[Element] = []
+    elements: List[ElementCreateRequest] = []

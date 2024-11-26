@@ -1,5 +1,14 @@
 import uuid
 from datetime import datetime
+import os
+
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
+
+
+def is_string_empty(string: str) -> bool:
+    return string is None or string.strip() == ""
 
 
 def is_valid_uuid(uuid_to_test: str) -> bool:
