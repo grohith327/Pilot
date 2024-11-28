@@ -43,7 +43,7 @@ class Element:
             "is_active": self.is_active,
         }
 
-    @staticmethod
+    @classmethod
     def from_dict(cls, data: dict) -> "Element":
         element = cls(
             id=data["id"],

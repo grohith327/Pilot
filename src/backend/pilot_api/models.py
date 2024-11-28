@@ -15,21 +15,21 @@ class Element(BaseModel):
     success_count: int
 
 
+class ElementCreateRequest(BaseModel):
+    name: str
+    description: Optional[str] = None
+    activate: Optional[bool] = True
+    project_id: Optional[str] = None
+
+
 class Project(BaseModel):
     id: str
     name: str
     description: Optional[str] = None
     creation_time: datetime
     last_updated_time: datetime
-    elements: List[Element] = []
+    elements: List[ElementCreateRequest] = []
     model_id: str
-
-
-class ElementCreateRequest(BaseModel):
-    name: str
-    description: Optional[str] = None
-    activate: Optional[bool] = False
-    project_id: Optional[str] = None
 
 
 class ProjectCreateRequest(BaseModel):

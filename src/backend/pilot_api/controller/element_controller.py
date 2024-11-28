@@ -32,13 +32,18 @@ class ElementController:
         if project_data is None:
             raise HTTPException(status_code=400, detail="Project not found")
 
+        current_time = get_current_time()
         data = {
             "id": generate_uuid(),
             "name": element_create_request.name,
             "description": element_create_request.description,
             "is_active": element_create_request.activate,
             "project_id": element_create_request.project_id,
-            "last_updated_time": get_current_time(),
+            "last_updated_time": current_time,
+            "creation_time": current_time,
+            "impression": 0,
+            "success_count": 0,
+            "success_rate": 0,
         }
         self.element_db_client.insert_data(data)
         return {"id": data["id"]}

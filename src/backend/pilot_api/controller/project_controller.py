@@ -11,6 +11,7 @@ from fastapi import HTTPException
 from pilot_api.model.model_manager import ModelManager
 from pilot_api.model.dynamic_thompson_sampling import DynamicThompsonSampling
 from pilot_api.element import Element
+from typing import List
 
 
 class ProjectController:
@@ -31,13 +32,35 @@ class ProjectController:
         project_id = generate_uuid()
         model_id = generate_uuid()
 
-        self.model_manager.add_model(project_id, DynamicThompsonSampling([]))
+        elements: List[Element] = []
+        current_time = get_current_time()
+        for element_create_request in project_create_request.elements:
+            if is_string_empty(element_create_request.name):
+                raise HTTPException(status_code=400, detail="Element name is required")
+
+            element_data = {
+                "id": generate_uuid(),
+                "name": element_create_request.name,
+                "description": element_create_request.description,
+                "is_active": element_create_request.activate,
+                "project_id": project_id,
+                "last_updated_time": current_time,
+                "creation_time": current_time,
+                "impression": 0,
+                "success_count": 0,
+                "success_rate": 0,
+            }
+            self.element_db_client.insert_data(element_data)
+            element = Element.from_dict(element_data)
+            elements.append(element)
+
+        self.model_manager.add_model(project_id, DynamicThompsonSampling(elements))
         data = {
             "id": project_id,
             "name": project_create_request.name,
             "description": project_create_request.description,
-            "last_updated_time": get_current_time(),
-            "elements": [],  ## TODO: Add support for creating elements
+            "last_updated_time": current_time,
+            "elements": [element.id for element in elements],
             "model_id": model_id,
         }
         self.project_db_client.insert_data(data)
@@ -58,7 +81,7 @@ class ProjectController:
             raise HTTPException(status_code=500, detail="Model not found")
 
         project_data = await self.get_project(project_id)
-        if len(project_data.elements) != len(model.elements):
+        if len(project_data["elements"]) != len(model.elements):
             raise HTTPException(
                 status_code=500, detail="Model arms does not match project elements"
             )
