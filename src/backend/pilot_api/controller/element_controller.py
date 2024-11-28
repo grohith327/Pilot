@@ -8,6 +8,10 @@ from pilot_api.utils import (
     get_current_time,
 )
 from fastapi import HTTPException
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class ElementController:
@@ -46,6 +50,7 @@ class ElementController:
             "success_rate": 0,
         }
         self.element_db_client.insert_data(data)
+        logger.info(f"Created element with id {data['id']}")
         return {"id": data["id"]}
 
     async def get_element(self, element_id: str):
@@ -56,4 +61,5 @@ class ElementController:
         if element_data is None or len(element_data.data) == 0:
             raise HTTPException(status_code=404, detail="Element not found")
 
+        logger.info(f"Fetched element with id {element_id}")
         return element_data.data[0]

@@ -12,6 +12,9 @@ from pilot_api.model.model_manager import ModelManager
 from pilot_api.model.dynamic_thompson_sampling import DynamicThompsonSampling
 from pilot_api.element import Element
 from typing import List
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ProjectController:
@@ -52,6 +55,7 @@ class ProjectController:
             }
             self.element_db_client.insert_data(element_data)
             element = Element.from_dict(element_data)
+            logger.info(f"Created element with id {element.id}")
             elements.append(element)
 
         self.model_manager.add_model(project_id, DynamicThompsonSampling(elements))
@@ -64,6 +68,7 @@ class ProjectController:
             "model_id": model_id,
         }
         self.project_db_client.insert_data(data)
+        logger.info(f"Created project with id {project_id}")
         return {"id": project_id}
 
     async def get_project(self, project_id: str):
@@ -73,6 +78,7 @@ class ProjectController:
         project_data = self.project_db_client.fetch_data({"id": project_id})
         if project_data is None or len(project_data.data) == 0:
             raise HTTPException(status_code=404, detail="Project not found")
+        logger.info(f"Fetched project with id {project_id}")
         return project_data.data[0]
 
     async def get_recommendation(self, project_id: str):
@@ -85,8 +91,11 @@ class ProjectController:
             raise HTTPException(
                 status_code=500, detail="Model arms does not match project elements"
             )
-
-        return {"element_id": model.get_recommendation()}
+        recommendation = model.get_recommendation()
+        logger.info(
+            f"Fetched recommendation: {recommendation} for project with id {project_id}"
+        )
+        return {"element_id": recommendation}
 
     async def record_action(self, project_id: str, element_id: str, success: bool):
         model = self.model_manager.get_model(project_id)
@@ -104,5 +113,8 @@ class ProjectController:
                 "last_updated_time": get_current_time(),
                 "success_rate": element.get_success_rate(),
             },
+        )
+        logger.info(
+            f"Recorded action: {element_id}, success: {success} for project with id {project_id}"
         )
         return {"action_recorded": True}
