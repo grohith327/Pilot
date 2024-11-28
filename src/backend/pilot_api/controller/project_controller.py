@@ -10,6 +10,7 @@ from pilot_api.utils import (
 from fastapi import HTTPException
 from pilot_api.model.model_manager import ModelManager
 from pilot_api.model.dynamic_thompson_sampling import DynamicThompsonSampling
+from pilot_api.element import Element
 
 
 class ProjectController:
@@ -30,7 +31,6 @@ class ProjectController:
         project_id = generate_uuid()
         model_id = generate_uuid()
 
-        ## TODO: Add support for creating elements
         self.model_manager.add_model(project_id, DynamicThompsonSampling([]))
         data = {
             "id": project_id,
@@ -51,3 +51,35 @@ class ProjectController:
         if project_data is None or len(project_data.data) == 0:
             raise HTTPException(status_code=404, detail="Project not found")
         return project_data.data[0]
+
+    async def get_recommendation(self, project_id: str):
+        model = self.model_manager.get_model(project_id)
+        if model is None:
+            raise HTTPException(status_code=500, detail="Model not found")
+
+        project_data = await self.get_project(project_id)
+        if len(project_data.elements) != len(model.elements):
+            raise HTTPException(
+                status_code=500, detail="Model arms does not match project elements"
+            )
+
+        return {"element_id": model.get_recommendation()}
+
+    async def record_action(self, project_id: str, element_id: str, success: bool):
+        model = self.model_manager.get_model(project_id)
+        if model is None:
+            raise HTTPException(status_code=500, detail="Model not found")
+
+        model.update(element_id, success)
+        element: Element = model.elements[element_id]
+        element.update_success_count(success)
+        self.element_db_client.update_data(
+            {"id": element_id},
+            {
+                "impression": element.impression,
+                "success_count": element.success_count,
+                "last_updated_time": get_current_time(),
+                "success_rate": element.get_success_rate(),
+            },
+        )
+        return {"action_recorded": True}

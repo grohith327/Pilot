@@ -36,3 +36,8 @@ class ProjectCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
     elements: List[ElementCreateRequest] = []
+
+
+class RecordActionRequest(BaseModel):
+    element_id: str
+    success: bool

@@ -5,6 +5,7 @@ from pilot_api.model.dynamic_thompson_sampling import DynamicThompsonSampling
 ## TODO: Add methods to save and load model store
 class ModelManager:
     def __init__(self):
+        ## TODO: On initialization, load all the models from the object store
         self.model_store: Dict[str, DynamicThompsonSampling] = {}
 
     def add_model(self, project_id: str, model: DynamicThompsonSampling):
