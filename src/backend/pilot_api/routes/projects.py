@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from pilot_api.models import ProjectCreateRequest, RecordActionRequest
+from pilot_api.models import ProjectCreateRequest, RecordActionRequest, ProjectUpdateRequest
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.database.element_database import ElementDbClient
 from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY
@@ -27,8 +27,8 @@ async def get_project(project_id: str):
 
 
 @router.put("/{project_id}")
-async def update_project(project_id: str):
-    pass
+async def update_project(project_id: str, project_update_request: ProjectUpdateRequest):
+    return await project_controller.update_project(project_id, project_update_request)
 
 
 @router.get("/{project_id}/recommendation")

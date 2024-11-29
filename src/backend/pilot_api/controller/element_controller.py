@@ -76,9 +76,9 @@ class ElementController:
 
         current_time = get_current_time()
         data = {}
-        if element_update_request.name is not None:
+        if not is_string_empty(element_update_request.name):
             data["name"] = element_update_request.name
-        if element_update_request.description is not None:
+        if not is_string_empty(element_update_request.description):
             data["description"] = element_update_request.description
         if element_update_request.activate is not None:
             data["is_active"] = element_update_request.activate

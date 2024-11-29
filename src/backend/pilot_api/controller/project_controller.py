@@ -1,6 +1,6 @@
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.database.element_database import ElementDbClient
-from pilot_api.models import ProjectCreateRequest
+from pilot_api.models import ProjectCreateRequest, ProjectUpdateRequest
 from pilot_api.utils import (
     is_string_empty,
     generate_uuid,
@@ -118,3 +118,28 @@ class ProjectController:
             f"Recorded action: {element_id}, success: {success} for project with id {project_id}"
         )
         return {"action_recorded": True}
+
+    async def update_project(
+        self, project_id: str, project_update_request: ProjectUpdateRequest
+    ):
+        if is_string_empty(project_id) or not is_valid_uuid(project_id):
+            raise HTTPException(status_code=400, detail="Invalid project id")
+
+        project_data = self.project_db_client.fetch_data({"id": project_id})
+        if project_data is None or len(project_data.data) == 0:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        current_time = get_current_time()
+        data = {}
+        if not is_string_empty(project_update_request.name):
+            data["name"] = project_update_request.name
+        if not is_string_empty(project_update_request.description):
+            data["description"] = project_update_request.description
+
+        if len(data) == 0:
+            raise HTTPException(status_code=400, detail="No fields to update")
+
+        data["last_updated_time"] = current_time
+        updated_data = self.project_db_client.update_data({"id": project_id}, data)
+        logger.info(f"Updated project with id {project_id}")
+        return updated_data.data[0]
