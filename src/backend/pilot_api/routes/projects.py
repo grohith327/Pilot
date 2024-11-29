@@ -31,11 +31,6 @@ async def update_project(project_id: str):
     pass
 
 
-@router.post("/{project_id}/elements")
-async def add_element_to_project(project_id: str, element_id: str):
-    pass
-
-
 @router.get("/{project_id}/recommendation")
 async def get_recommedation(project_id: str):
     return await project_controller.get_recommendation(project_id)

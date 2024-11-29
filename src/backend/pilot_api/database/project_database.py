@@ -22,7 +22,7 @@ class ProjectDbClient(BaseDbClient):
         return (
             self.supabase_client.table(self.table_name)
             .update(data)
-            .eq("id", query.id)
+            .eq("id", query["id"])
             .execute()
         )
 

@@ -22,6 +22,12 @@ class ElementCreateRequest(BaseModel):
     project_id: Optional[str] = None
 
 
+class ElementUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    activate: Optional[bool] = None
+
+
 class Project(BaseModel):
     id: str
     name: str

@@ -1,6 +1,6 @@
 from pilot_api.database.element_database import ElementDbClient
 from pilot_api.database.project_database import ProjectDbClient
-from pilot_api.models import ElementCreateRequest
+from pilot_api.models import ElementCreateRequest, ElementUpdateRequest
 from pilot_api.utils import (
     is_string_empty,
     is_valid_uuid,
@@ -33,7 +33,7 @@ class ElementController:
         project_data = self.project_db_client.fetch_data(
             {"id": element_create_request.project_id}
         )
-        if project_data is None:
+        if project_data is None or len(project_data.data) == 0:
             raise HTTPException(status_code=400, detail="Project not found")
 
         current_time = get_current_time()
@@ -63,3 +63,30 @@ class ElementController:
 
         logger.info(f"Fetched element with id {element_id}")
         return element_data.data[0]
+
+    async def update_element(
+        self, element_id: str, element_update_request: ElementUpdateRequest
+    ):
+        if is_string_empty(element_id) or not is_valid_uuid(element_id):
+            raise HTTPException(status_code=400, detail="Invalid element id")
+
+        element_data = self.element_db_client.fetch_data({"id": element_id})
+        if element_data is None or len(element_data.data) == 0:
+            raise HTTPException(status_code=404, detail="Element not found")
+
+        current_time = get_current_time()
+        data = {}
+        if element_update_request.name is not None:
+            data["name"] = element_update_request.name
+        if element_update_request.description is not None:
+            data["description"] = element_update_request.description
+        if element_update_request.activate is not None:
+            data["is_active"] = element_update_request.activate
+
+        if len(data) == 0:
+            raise HTTPException(status_code=400, detail="No fields to update")
+
+        data["last_updated_time"] = current_time
+        updated_data = self.element_db_client.update_data({"id": element_id}, data)
+        logger.info(f"Updated element with id {element_id}")
+        return updated_data.data[0]
