@@ -12,3 +12,9 @@ class StorageClient:
         return self.supabase_client.storage.from_(bucket_name).upload(
             file_path, file_data
         )
+
+    @classmethod
+    def get_instance(cls, url: str, key: str):
+        if cls._instance is None:
+            cls._instance = cls(url, key)
+        return cls._instance

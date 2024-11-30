@@ -15,8 +15,8 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 
 project_db_client = ProjectDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
 element_db_client = ElementDbClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
-storage_client = StorageClient(SUPABASE_URL, SUPABASE_KEY)
-model_manager = ModelManager(storage_client, project_db_client)
+storage_client = StorageClient.get_instance(SUPABASE_URL, SUPABASE_KEY)
+model_manager = ModelManager.get_instance(storage_client, project_db_client)
 project_controller = ProjectController(
     project_db_client, element_db_client, model_manager
 )

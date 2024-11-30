@@ -10,6 +10,7 @@ class ModelManager:
     ):
         self.storage_client = storage_client
         self.model_store: Dict[str, DynamicThompsonSampling] = {}
+        self.project_db_client = project_db_client
 
     def add_model(self, project_id: str, model: DynamicThompsonSampling):
         self.model_store[project_id] = model
@@ -19,12 +20,20 @@ class ModelManager:
             return self.model_store[project_id]
         return None
 
-    def load_model(self, model_id: str):
-        model = DynamicThompsonSampling.load_from_checkpoint(
-            model_id, self.storage_client
-        )
-        project_data = self.project_db_client.fetch_with_filters("model_id", model_id)
+    def load_model(self, project_id: str):
+        project_data = self.project_db_client.fetch_data({"id", project_id})
         if project_data is None or len(project_data.data) == 0:
-            raise RuntimeError(f"Model with id {model_id} not found")
-        self.add_model(project_data.data[0]["id"], model)
-        return model
+            raise RuntimeError(f"Project with id {project_id} not found")
+
+        model = DynamicThompsonSampling.load_from_checkpoint(
+            project_data.data[0]["model_id"], self.storage_client
+        )
+        self.add_model(project_id, model)
+
+    @classmethod
+    def get_instance(
+        cls, storage_client: StorageClient, project_db_client: ProjectDbClient
+    ):
+        if cls._instance is None:
+            cls._instance = cls(storage_client, project_db_client)
+        return cls._instance
