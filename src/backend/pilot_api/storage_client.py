@@ -2,6 +2,8 @@ from supabase import create_client, Client
 
 
 class StorageClient:
+    _instance = None
+    
     def __init__(self, url: str, key: str):
         self.supabase_client: Client = create_client(url, key)
 

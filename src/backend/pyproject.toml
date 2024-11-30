@@ -12,6 +12,7 @@ numpy = "^2.1.0"
 supabase = "^2.10.0"
 python-dotenv = "^1.0.1"
 humps = "^0.2.2"
+uvicorn = "^0.32.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
@@ -19,3 +20,6 @@ black = "^24.10.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start-server = "pilot_api.run:main"

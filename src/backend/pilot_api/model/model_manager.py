@@ -5,6 +5,8 @@ from pilot_api.database.project_database import ProjectDbClient
 
 
 class ModelManager:
+    _instance = None
+    
     def __init__(
         self, storage_client: StorageClient, project_db_client: ProjectDbClient
     ):

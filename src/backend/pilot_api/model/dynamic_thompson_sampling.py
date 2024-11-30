@@ -90,7 +90,6 @@ class DynamicThompsonSampling(BanditAlgorithm):
             self._model_update_counter = 0
 
     def save_checkpoint(self):
-
         state = {
             "elements": {k: v.to_dict() for k, v in self.elements.items()},
             "alpha": self.alpha,
