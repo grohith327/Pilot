@@ -6,7 +6,7 @@ import numpy as np
 import json
 import logging
 import uuid
-import os
+from supabase import StorageException
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +23,11 @@ class DynamicThompsonSampling(BanditAlgorithm):
         self.alpha = alpha
         self.beta = beta
         self.elements = {}
-        self.model_id = uuid.uuid4()
+        self.model_id = str(uuid.uuid4())
         self.storage_client = storage_client
         self.save_interval = save_interval
         self._model_update_counter = 0
-        
+
         self.add_elements(elements)
 
     def add_elements(self, new_elements: list[Element]):
@@ -102,25 +102,32 @@ class DynamicThompsonSampling(BanditAlgorithm):
             MODEL_CHECKPOINT_BUCKET,
             save_path,
             json_state,
-            file_options={"content-type": "application/json"},
         )
         logger.info(f"Saved model checkpoint to {save_path}")
 
     @classmethod
-    def load_from_checkpoint(cls, model_id: str, storage_client: StorageClient):
+    def load_from_checkpoint(
+        cls, model_id: str, storage_client: StorageClient
+    ) -> "DynamicThompsonSampling":
         load_path = f"{model_id}.json"
         logger.info(f"Loading checkpoint from {load_path}")
-        json_state = storage_client.read_file(MODEL_CHECKPOINT_BUCKET, load_path)
-        state = json.loads(json_state.decode("utf-8"))
-
-        model = cls(
-            elements={k: Element.from_dict(v) for k, v in state["elements"].items()},
-            storage_client=storage_client,
-            alpha=state["alpha"],
-            beta=state["beta"],
-        )
-        model.model_id = state["model_id"]
-        logger.info(f"Successfully loaded model checkpoint from {load_path}")
+        try:
+            json_state = storage_client.read_file(MODEL_CHECKPOINT_BUCKET, load_path)
+            state = json.loads(json_state.decode("utf-8"))
+            model = cls(
+                elements={
+                    k: Element.from_dict(v) for k, v in state["elements"].items()
+                },
+                storage_client=storage_client,
+                alpha=state["alpha"],
+                beta=state["beta"],
+            )
+            model.model_id = state["model_id"]
+            logger.info(f"Successfully loaded model checkpoint from {load_path}")
+            return model
+        except StorageException as e:
+            logger.error(f"Model checkpoint not found for {model_id}")
+            raise e
 
     def get_stats(self) -> dict:
         stats = {"model_id": self.model_id}

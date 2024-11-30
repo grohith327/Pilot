@@ -1,4 +1,5 @@
 from pilot_api.database.base_client import BaseDbClient
+from pilot_api.utils import ELEMENTS_TABLE
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,7 +9,7 @@ class ElementDbClient(BaseDbClient):
     _instance = None
 
     def __init__(self, url: str, key: str):
-        super().__init__(url, key, "elements")
+        super().__init__(url, key, ELEMENTS_TABLE)
 
     def fetch_data(self, query):
         return (

@@ -8,7 +8,7 @@ load_dotenv()
 
 from pilot_api.routes import health, projects, elements
 from supabase import create_client
-from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY
+from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY, PROJECTS_TABLE
 from pilot_api.storage_client import StorageClient
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.model.model_manager import ModelManager
@@ -38,10 +38,11 @@ model_manager = ModelManager.get_instance(storage_client, project_db_client)
 @app.on_event("startup")
 async def startup_event():
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    pk_response = supabase.rpc("get_primary_keys", {"table_name": "projects"}).execute()
+    pk_response = supabase.table(PROJECTS_TABLE).select("id").execute()
     logger.warning(f"Loading models for {len(pk_response.data)} projects")
     for pk in pk_response.data:
-        model_manager.load_model(pk)
+        logger.warning(f"Loading model for project {pk['id']}")
+        model_manager.load_model(pk["id"])
     logger.warning("Successfully loaded models")
 
 

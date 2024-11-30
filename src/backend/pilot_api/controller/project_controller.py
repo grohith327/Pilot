@@ -58,7 +58,10 @@ class ProjectController:
             logger.info(f"Created element with id {element.id}")
             elements.append(element)
 
-        self.model_manager.add_model(project_id, DynamicThompsonSampling(elements))
+        self.model_manager.add_model(
+            project_id,
+            DynamicThompsonSampling(elements, self.model_manager.storage_client),
+        )
         data = {
             "id": project_id,
             "name": project_create_request.name,
