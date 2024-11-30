@@ -104,7 +104,6 @@ class ProjectController:
 
         model.update(element_id, success)
         element: Element = model.elements[element_id]
-        element.update_success_count(success)
         self.element_db_client.update_data(
             {"id": element_id},
             {

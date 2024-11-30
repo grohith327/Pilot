@@ -5,6 +5,7 @@ import os
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
+MODEL_CHECKPOINT_BUCKET = os.getenv("MODEL_CHECKPOINT_BUCKET")
 
 
 def is_string_empty(string: str) -> bool:

@@ -1,4 +1,6 @@
 from pilot_api.model.base_bandit_algorithm import BanditAlgorithm
+from pilot_api.storage_client import StorageClient
+from pilot_api.utils import MODEL_CHECKPOINT_BUCKET, get_current_time
 from pilot_api.element import Element
 import numpy as np
 import json
@@ -10,12 +12,22 @@ logger = logging.getLogger(__name__)
 
 
 class DynamicThompsonSampling(BanditAlgorithm):
-    def __init__(self, elements: list[Element], alpha: float = 1.0, beta: float = 1.0):
+    def __init__(
+        self,
+        elements: list[Element],
+        storage_client: StorageClient,
+        alpha: float = 1.0,
+        beta: float = 1.0,
+        save_interval: int = 100,
+    ):
         self.alpha = alpha
         self.beta = beta
         self.elements = {}
         self.model_id = uuid.uuid4()
-
+        self.storage_client = storage_client
+        self.save_interval = save_interval
+        self._model_update_counter = 0
+        
         self.add_elements(elements)
 
     def add_elements(self, new_elements: list[Element]):
@@ -72,30 +84,44 @@ class DynamicThompsonSampling(BanditAlgorithm):
         if element_id not in self.elements:
             raise ValueError(f"Element with id {element_id} not found")
         self.elements[element_id].update_success_count(reward)
+        self._model_update_counter += 1
+        if self._model_update_counter % self.save_interval == 0:
+            self.save_checkpoint()
+            self._model_update_counter = 0
 
-    def save_checkpoint(self, checkpoint_path: str):
+    def save_checkpoint(self):
+
         state = {
             "elements": {k: v.to_dict() for k, v in self.elements.items()},
             "alpha": self.alpha,
             "beta": self.beta,
             "model_id": self.model_id,
         }
+        json_state = json.dumps(state).encode("utf-8")
+        save_path = f"{self.model_id}.json"
+        self.storage_client.write_file(
+            MODEL_CHECKPOINT_BUCKET,
+            save_path,
+            json_state,
+            file_options={"content-type": "application/json"},
+        )
+        logger.info(f"Saved model checkpoint to {save_path}")
 
-        save_path = os.path.join(checkpoint_path, f"{self.model_id}.json")
-        logger.info(f"Saving checkpoint to {save_path}")
-        with open(save_path, "w") as f:
-            json.dump(state, f)
-
-    def load_from_checkpoint(self, checkpoint_path: str, model_id: str):
-        load_path = os.path.join(checkpoint_path, f"{model_id}.json")
+    @classmethod
+    def load_from_checkpoint(cls, model_id: str, storage_client: StorageClient):
+        load_path = f"{model_id}.json"
         logger.info(f"Loading checkpoint from {load_path}")
-        with open(load_path, "r") as f:
-            state = json.load(f)
+        json_state = storage_client.read_file(MODEL_CHECKPOINT_BUCKET, load_path)
+        state = json.loads(json_state.decode("utf-8"))
 
-        self.elements = {k: Element.from_dict(v) for k, v in state["elements"].items()}
-        self.alpha = state["alpha"]
-        self.beta = state["beta"]
-        self.model_id = state["model_id"]
+        model = cls(
+            elements={k: Element.from_dict(v) for k, v in state["elements"].items()},
+            storage_client=storage_client,
+            alpha=state["alpha"],
+            beta=state["beta"],
+        )
+        model.model_id = state["model_id"]
+        logger.info(f"Successfully loaded model checkpoint from {load_path}")
 
     def get_stats(self) -> dict:
         stats = {"model_id": self.model_id}
