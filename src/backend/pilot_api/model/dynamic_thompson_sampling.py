@@ -1,6 +1,6 @@
 from pilot_api.model.base_bandit_algorithm import BanditAlgorithm
 from pilot_api.storage_client import StorageClient
-from pilot_api.utils import MODEL_CHECKPOINT_BUCKET, get_current_time
+from pilot_api.utils import MODEL_CHECKPOINT_BUCKET
 from pilot_api.element import Element
 import numpy as np
 import json
@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class DynamicThompsonSampling(BanditAlgorithm):
     def __init__(
         self,
+        model_id: str,
         elements: list[Element],
         storage_client: StorageClient,
         alpha: float = 1.0,
@@ -23,7 +24,7 @@ class DynamicThompsonSampling(BanditAlgorithm):
         self.alpha = alpha
         self.beta = beta
         self.elements = {}
-        self.model_id = str(uuid.uuid4())
+        self.model_id = model_id
         self.storage_client = storage_client
         self.save_interval = save_interval
         self._model_update_counter = 0

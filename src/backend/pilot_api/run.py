@@ -8,7 +8,7 @@ load_dotenv()
 
 from pilot_api.routes import health, projects, elements
 from supabase import create_client
-from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY, PROJECTS_TABLE
+from pilot_api.utils import SUPABASE_URL, SUPABASE_KEY, PROJECTS_TABLE, STAGE
 from pilot_api.storage_client import StorageClient
 from pilot_api.database.project_database import ProjectDbClient
 from pilot_api.model.model_manager import ModelManager
@@ -16,7 +16,7 @@ from pilot_api.model.model_manager import ModelManager
 
 def setup_logging():
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.WARNING if STAGE == "prod" else logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
             logging.FileHandler(f"app-{datetime.now().strftime('%Y-%m-%d')}.log"),

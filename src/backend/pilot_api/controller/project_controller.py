@@ -60,7 +60,9 @@ class ProjectController:
 
         self.model_manager.add_model(
             project_id,
-            DynamicThompsonSampling(elements, self.model_manager.storage_client),
+            DynamicThompsonSampling(
+                str(model_id), elements, self.model_manager.storage_client
+            ),
         )
         data = {
             "id": project_id,
