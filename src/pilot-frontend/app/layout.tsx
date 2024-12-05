@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils"
 import { fontSans } from "@/lib/fonts"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { NavBar } from "@/components/navbar"
 
 
 interface RootLayoutProps {
@@ -26,15 +25,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <SidebarProvider>
-              <AppSidebar />
-              <main>
-                <SidebarTrigger />
-                <div className="relative flex min-h-screen flex-col">
-                  <div className="flex-1">{children}</div>
-                </div>
-              </main>
-            </SidebarProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <NavBar />
+              <div className="flex items-center justify-center w-screen mt-8">{children}</div>
+            </div>
             <TailwindIndicator />
           </ThemeProvider>
         </body>
