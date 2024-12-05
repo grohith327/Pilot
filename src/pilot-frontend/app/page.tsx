@@ -74,7 +74,7 @@ export default function Home() {
               </TableCell>
               <TableCell>{item.creationDate}</TableCell>
               <TableCell className="text-right">
-                <Button variant="outline" size="sm">View</Button>
+                <Button variant="outline" size="sm" className="rounded-md">View</Button>
               </TableCell>
             </TableRow>
           ))}
