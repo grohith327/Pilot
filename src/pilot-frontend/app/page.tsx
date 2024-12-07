@@ -55,10 +55,13 @@ export default function Home() {
     },
   ]
 
+  // Duplicate the items in results to have more data for testing
+  const resultsWithDuplicates = [...results, ...results, ...results, ...results, ...results]
+
   return (
-    <div>
+    <main className="min-h-screen bg-background">
       <ProjectSearchFilter />
-      <div className="rounded-md w-full max-w-7xl">
+      <div className="p-4 ml-64">
         <div className="flex justify-center">
           <SearchBar />
           <Button className="ml-4 rounded-xl" size="md" variant="outline">Search</Button>
@@ -75,7 +78,7 @@ export default function Home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {results.map((item) => (
+            {resultsWithDuplicates.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell className="hidden md:table-cell">{item.description}</TableCell>
@@ -96,6 +99,6 @@ export default function Home() {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </main>
   );
 }
