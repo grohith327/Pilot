@@ -1,13 +1,11 @@
 "use client"
 
-
 import "@/styles/globals.css"
-import { cn } from "@/lib/utils"
 import { fontSans } from "@/lib/fonts"
+import { cn } from "@/lib/utils"
+import { NavBar } from "@/components/navbar"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
-import { NavBar } from "@/components/navbar"
-
 
 interface RootLayoutProps {
   children: React.ReactNode
@@ -27,7 +25,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
               <NavBar />
-              <div className="flex items-center justify-center w-screen mt-8">{children}</div>
+              <div className="flex items-center justify-center w-screen mt-8">
+                {children}
+              </div>
             </div>
             <TailwindIndicator />
           </ThemeProvider>
