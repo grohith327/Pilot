@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { SearchBar } from "@/components/search-bar"
+import ProjectSearchFilter from "@/components/project-search-filter"
 
 export default function Home() {
   const results = [
@@ -18,6 +19,7 @@ export default function Home() {
       description: "A revolutionary new software for project management",
       status: "Active",
       creationDate: "2023-06-15",
+      lastModifiedDate: "2023-06-15"
     },
     {
       id: 2,
@@ -25,6 +27,7 @@ export default function Home() {
       description: "Advanced task tracking application for teams",
       status: "Inactive",
       creationDate: "2023-05-22",
+      lastModifiedDate: "2023-06-15"
     },
     {
       id: 3,
@@ -32,6 +35,7 @@ export default function Home() {
       description: "Powerful data analysis tool for businesses",
       status: "Inactive",
       creationDate: "2023-04-30",
+      lastModifiedDate: "2023-06-15"
     },
     {
       id: 4,
@@ -39,6 +43,7 @@ export default function Home() {
       description: "Secure and scalable cloud storage for enterprises",
       status: "Active",
       creationDate: "2023-06-01",
+      lastModifiedDate: "2023-06-15"
     },
     {
       id: 5,
@@ -46,11 +51,13 @@ export default function Home() {
       description: "Intelligent virtual assistant powered by machine learning",
       status: "Inactive",
       creationDate: "2023-06-10",
+      lastModifiedDate: "2023-06-15"
     },
   ]
 
   return (
     <div>
+      <ProjectSearchFilter />
       <div className="rounded-md w-full max-w-7xl">
         <div className="flex justify-center">
           <SearchBar />
@@ -62,7 +69,8 @@ export default function Home() {
               <TableHead>Name</TableHead>
               <TableHead className="hidden md:table-cell">Description</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>Creation Date</TableHead>
+              <TableHead>Last Modified Date</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -79,6 +87,7 @@ export default function Home() {
                   </Badge>
                 </TableCell>
                 <TableCell>{item.creationDate}</TableCell>
+                <TableCell>{item.lastModifiedDate}</TableCell>
                 <TableCell className="text-right">
                   <Button variant="secondary" size="default" className="rounded-xl">View</Button>
                 </TableCell>
