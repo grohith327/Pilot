@@ -1,3 +1,5 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,8 +12,10 @@ import {
 } from "@/components/ui/table"
 import { SearchBar } from "@/components/search-bar"
 import ProjectSearchFilter from "@/components/project-search-filter"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
+  const router = useRouter()
   const results = [
     {
       id: 1,
@@ -58,6 +62,10 @@ export default function Home() {
   // Duplicate the items in results to have more data for testing
   const resultsWithDuplicates = [...results, ...results, ...results, ...results, ...results]
 
+  const onProjectClick = (id: number) => {
+    router.push(`/projects/${id}`)
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <ProjectSearchFilter />
@@ -92,7 +100,7 @@ export default function Home() {
                 <TableCell>{item.creationDate}</TableCell>
                 <TableCell>{item.lastModifiedDate}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="secondary" size="default" className="rounded-xl">View</Button>
+                  <Button variant="secondary" size="default" className="rounded-xl" onClick={() => onProjectClick(item.id)}>View</Button>
                 </TableCell>
               </TableRow>
             ))}
