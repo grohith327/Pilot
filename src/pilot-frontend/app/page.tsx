@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { SearchBar } from "@/components/search-bar"
 
 export default function Home() {
   const results = [
@@ -49,37 +50,43 @@ export default function Home() {
   ]
 
   return (
-    <div className="rounded-md w-full max-w-7xl">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead className="hidden md:table-cell">Description</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {results.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.name}</TableCell>
-              <TableCell className="hidden md:table-cell">{item.description}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={item.status === 'Active' ? 'default' : 'secondary'}
-                >
-                  {item.status}
-                </Badge>
-              </TableCell>
-              <TableCell>{item.creationDate}</TableCell>
-              <TableCell className="text-right">
-                <Button variant="outline" size="sm" className="rounded-md">View</Button>
-              </TableCell>
+    <div>
+      <div className="rounded-md w-full max-w-7xl">
+        <div className="flex justify-center">
+          <SearchBar />
+          <Button className="ml-4 rounded-xl" size="md" variant="outline">Search</Button>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead className="hidden md:table-cell">Description</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {results.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell className="hidden md:table-cell">{item.description}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant={item.status === 'Active' ? 'default' : 'secondary'}
+                  >
+                    {item.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>{item.creationDate}</TableCell>
+                <TableCell className="text-right">
+                  <Button variant="secondary" size="default" className="rounded-xl">View</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

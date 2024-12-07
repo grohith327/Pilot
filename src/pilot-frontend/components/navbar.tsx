@@ -1,7 +1,8 @@
 import * as React from "react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { SearchBar } from "@/components/search-bar"
+import { Button } from "@/components/ui/button"
+
 
 export function NavBar() {
   return (
@@ -12,10 +13,8 @@ export function NavBar() {
             <span className="inline-block font-bold text-xl ml-2">🚀 Pilot</span>
           </Link>
         </div>
-        <div className="w-full max-w-md md:max-w-lg">
-          <SearchBar />
-        </div>
         <div className="flex-1 flex justify-end items-center space-x-4 mr-6">
+          <Button size="smd" variant="ghost" className="rounded-sm">Create Project</Button>
           <nav className="flex items-center space-x-1">
             <ThemeToggle />
           </nav>

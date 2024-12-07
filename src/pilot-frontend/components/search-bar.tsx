@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 
 export function SearchBar() {
   return (
-    <div className="relative w-full max-w-xl md:max-w-2xl">
+    <div className="relative w-full max-w-xl md:max-w-xl">
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
         <SearchIcon className="size-5 text-muted-foreground" />
       </div>
