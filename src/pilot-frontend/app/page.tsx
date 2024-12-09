@@ -74,59 +74,63 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <ProjectSearchFilter />
-      <div className="p-4 ml-64">
-        <div className="flex justify-center">
-          <SearchBar />
-          <Button className="ml-4 rounded-xl" size="md" variant="outline">
-            Search
-          </Button>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Description
-              </TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Creation Date</TableHead>
-              <TableHead>Last Modified Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {resultsWithDuplicates.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.name}</TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {item.description}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={item.status === "Active" ? "default" : "secondary"}
-                  >
-                    {item.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>{item.creationDate}</TableCell>
-                <TableCell>{item.lastModifiedDate}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="secondary"
-                    size="default"
-                    className="rounded-xl"
-                    onClick={() => onProjectClick(item.id)}
-                  >
-                    View
-                  </Button>
-                </TableCell>
+    <div className="flex items-center justify-center w-screen mt-8">
+      <main className="min-h-screen bg-background">
+        <ProjectSearchFilter />
+        <div className="p-4 ml-64">
+          <div className="flex justify-center">
+            <SearchBar />
+            <Button className="ml-4 rounded-xl" size="md" variant="outline">
+              Search
+            </Button>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Description
+                </TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Creation Date</TableHead>
+                <TableHead>Last Modified Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </main>
+            </TableHeader>
+            <TableBody>
+              {resultsWithDuplicates.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item.description}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        item.status === "Active" ? "default" : "secondary"
+                      }
+                    >
+                      {item.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{item.creationDate}</TableCell>
+                  <TableCell>{item.lastModifiedDate}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="secondary"
+                      size="default"
+                      className="rounded-xl"
+                      onClick={() => onProjectClick(item.id)}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </main>
+    </div>
   )
 }

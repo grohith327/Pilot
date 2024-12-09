@@ -25,9 +25,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
               <NavBar />
-              <div className="flex items-center justify-center w-screen mt-8">
-                {children}
-              </div>
+              {children}
             </div>
             <TailwindIndicator />
           </ThemeProvider>
