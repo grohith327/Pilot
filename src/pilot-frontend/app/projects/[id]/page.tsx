@@ -1,6 +1,5 @@
 import { ChevronDownIcon } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -62,14 +61,15 @@ export default function ProjectPage() {
             <p className="text-gray-500 text-sm mt-4">
               {dummyProjectData.description}
             </p>
-            <Badge
-              variant={
-                dummyProjectData.status === "Active" ? "default" : "secondary"
+            <span
+              className={
+                dummyProjectData.status === "Active"
+                  ? "text-green-600 mt-4"
+                  : "text-red-600 mt-4"
               }
-              className="mt-4"
             >
-              {dummyProjectData.status}
-            </Badge>
+              {dummyProjectData.status === "Active" ? "Active" : "Inactive"}
+            </span>
           </div>
         </div>
 

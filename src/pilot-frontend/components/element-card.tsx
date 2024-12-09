@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -29,9 +29,20 @@ export function ElementCard(props: ElementCardProps) {
         <p className="text-sm text-gray-500">
           Last Updated Date: {props.lastModifiedDate}
         </p>
-        <Badge variant={props.status === "Active" ? "default" : "secondary"}>
-          {props.status}
-        </Badge>
+        <div className="flex justify-between">
+          <span
+            className={
+              props.status === "Active" ? "text-green-600" : "text-red-600"
+            }
+          >
+            {props.status === "Active" ? "Active" : "Inactive"}
+          </span>
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" className="rounded-xl">
+              {props.status === "Active" ? "Deactivate" : "Activate"}
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   )
