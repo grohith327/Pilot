@@ -84,6 +84,8 @@ class ProjectController:
         if project_data is None or len(project_data.data) == 0:
             raise HTTPException(status_code=404, detail="Project not found")
         logger.info(f"Fetched project with id {project_id}")
+
+        # TODO: Fetch elements and add it to the project data
         return project_data.data[0]
 
     async def get_recommendation(self, project_id: str):
