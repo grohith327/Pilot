@@ -41,7 +41,7 @@ class ElementController:
             "id": generate_uuid(),
             "name": element_create_request.name,
             "description": element_create_request.description,
-            "is_active": element_create_request.activate,
+            "status": element_create_request.status,
             "project_id": element_create_request.project_id,
             "last_updated_time": current_time,
             "creation_time": current_time,
@@ -80,8 +80,8 @@ class ElementController:
             data["name"] = element_update_request.name
         if not is_string_empty(element_update_request.description):
             data["description"] = element_update_request.description
-        if element_update_request.activate is not None:
-            data["is_active"] = element_update_request.activate
+        if element_update_request.status is not None:
+            data["status"] = element_update_request.status
 
         if len(data) == 0:
             raise HTTPException(status_code=400, detail="No fields to update")

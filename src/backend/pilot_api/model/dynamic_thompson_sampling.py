@@ -1,11 +1,10 @@
 from pilot_api.model.base_bandit_algorithm import BanditAlgorithm
 from pilot_api.storage_client import StorageClient
-from pilot_api.utils import MODEL_CHECKPOINT_BUCKET
+from pilot_api.utils import MODEL_CHECKPOINT_BUCKET, ElementStatus
 from pilot_api.element import Element
 import numpy as np
 import json
 import logging
-import uuid
 from supabase import StorageException
 
 logger = logging.getLogger(__name__)
@@ -34,7 +33,9 @@ class DynamicThompsonSampling(BanditAlgorithm):
     def add_elements(self, new_elements: list[Element]):
         if len(self.elements) != 0:
             active_elements = [
-                element for element in self.elements.values() if element.is_active
+                element
+                for element in self.elements.values()
+                if element.status == ElementStatus.ACTIVE
             ]
             if len(active_elements) != 0:
                 logger.warning(
@@ -59,17 +60,19 @@ class DynamicThompsonSampling(BanditAlgorithm):
             if new_element.id not in self.elements:
                 self.elements[new_element.id] = new_element
             else:
-                self.elements[new_element.id].is_active = True
+                self.elements[new_element.id].status = ElementStatus.ACTIVE
         logger.warning(f"Added {len(new_elements)} elements to the algorithm")
 
     def remove_elements(self, elements_to_remove: list[Element]):
         for element_to_remove in elements_to_remove:
             if element_to_remove.id in self.elements:
-                self.elements[element_to_remove.id].is_active = False
+                self.elements[element_to_remove.id].status = ElementStatus.INACTIVE
         logger.warning(f"Removed {len(elements_to_remove)} elements from the algorithm")
 
     def get_recommendation(self) -> str:
-        active_elements = {k: v for k, v in self.elements.items() if v.is_active}
+        active_elements = {
+            k: v for k, v in self.elements.items() if v.status == ElementStatus.ACTIVE
+        }
         if not active_elements:
             raise ValueError("No active elements found")
 
@@ -138,7 +141,7 @@ class DynamicThompsonSampling(BanditAlgorithm):
                 "success_rate": element.get_success_rate(),
                 "impression": element.impression,
                 "success_count": element.success_count,
-                "is_active": element.is_active,
+                "status": element.status,
                 "creation_time": element.creation_time.isoformat(),
                 "last_updated_time": element.last_updated_time.isoformat(),
             }

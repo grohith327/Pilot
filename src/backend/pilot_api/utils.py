@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 import os
+from enum import Enum
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -10,6 +11,16 @@ STAGE = os.getenv("STAGE")
 
 PROJECTS_TABLE = "projects"
 ELEMENTS_TABLE = "elements"
+
+
+class ProjectStatus(Enum):
+    ACTIVE = "Active"
+    INACTIVE = "Inactive"
+
+
+class ElementStatus(Enum):
+    ACTIVE = "Active"
+    INACTIVE = "Inactive"
 
 
 def is_string_empty(string: str) -> bool:

@@ -11,6 +11,15 @@ class ProjectDbClient(BaseDbClient):
     def __init__(self, url: str, key: str):
         super().__init__(url, key, PROJECTS_TABLE)
 
+    def sample_projects(self, sample_size: int):
+        return (
+            self.supabase_client.table(self.table_name)
+            .select("*")
+            .order("RANDOM()")
+            .limit(sample_size)
+            .execute()
+        )
+
     def fetch_data(self, query):
         return (
             self.supabase_client.table(self.table_name)

@@ -6,6 +6,8 @@ from pilot_api.utils import (
     generate_uuid,
     is_valid_uuid,
     get_current_time,
+    ProjectStatus,
+    ElementStatus,
 )
 from fastapi import HTTPException
 from pilot_api.model.model_manager import ModelManager
@@ -45,7 +47,7 @@ class ProjectController:
                 "id": generate_uuid(),
                 "name": element_create_request.name,
                 "description": element_create_request.description,
-                "is_active": element_create_request.activate,
+                "status": element_create_request.status,
                 "project_id": project_id,
                 "last_updated_time": current_time,
                 "creation_time": current_time,
@@ -94,6 +96,9 @@ class ProjectController:
             raise HTTPException(status_code=500, detail="Model not found")
 
         project_data = await self.get_project(project_id)
+        if project_data["status"] != ProjectStatus.ACTIVE:
+            raise HTTPException(status_code=400, detail="Project is not active")
+
         if len(project_data["elements"]) != len(model.elements):
             raise HTTPException(
                 status_code=500, detail="Model arms does not match project elements"
@@ -108,6 +113,14 @@ class ProjectController:
         model = self.model_manager.get_model(project_id)
         if model is None:
             raise HTTPException(status_code=500, detail="Model not found")
+
+        project_data = await self.get_project(project_id)
+        if project_data["status"] != ProjectStatus.ACTIVE:
+            raise HTTPException(status_code=400, detail="Project is not active")
+
+        element_data = await self.get_element(element_id)
+        if element_data["status"] != ElementStatus.ACTIVE:
+            raise HTTPException(status_code=400, detail="Element is not active")
 
         model.update(element_id, success)
         element: Element = model.elements[element_id]
@@ -149,3 +162,6 @@ class ProjectController:
         updated_data = self.project_db_client.update_data({"id": project_id}, data)
         logger.info(f"Updated project with id {project_id}")
         return updated_data.data[0]
+    
+    async def browse_projects(self):
+        return self.project_db_client.sample_projects(20).data

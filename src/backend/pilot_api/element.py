@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from pilot_api.utils import ElementStatus
 
 class Element:
     def __init__(
@@ -9,16 +9,16 @@ class Element:
         description: str,
         impression: int = 0,
         success_count: int = 0,
-        is_active: bool = True,
+        status: str = ElementStatus.ACTIVE,
     ):
         self.id = id
         self.name = name
         self.description = description
         self.impression = impression
         self.success_count = success_count
+        self.status = status
         self.creation_time = datetime.now()
         self.last_updated_time = datetime.now()
-        self.is_active = is_active
 
     def get_success_rate(self) -> float:
         if self.impression == 0:
@@ -40,7 +40,7 @@ class Element:
             "success_count": self.success_count,
             "creation_time": self.creation_time.isoformat(),
             "last_updated_time": self.last_updated_time.isoformat(),
-            "is_active": self.is_active,
+            "status": self.status,
         }
 
     @classmethod
@@ -51,9 +51,9 @@ class Element:
             description=data["description"],
             impression=data["impression"],
             success_count=data["success_count"],
+            status=data["status"],
         )
         element.creation_time = datetime.fromisoformat(data["creation_time"])
         element.last_updated_time = datetime.fromisoformat(data["last_updated_time"])
-        element.is_active = data["is_active"]
         return element
     
