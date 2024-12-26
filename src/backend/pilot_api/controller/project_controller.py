@@ -73,6 +73,7 @@ class ProjectController:
             "last_updated_time": current_time,
             "elements": [element.id for element in elements],
             "model_id": model_id,
+            "status": project_create_request.status,
         }
         self.project_db_client.insert_data(data)
         logger.info(f"Created project with id {project_id}")
@@ -162,6 +163,6 @@ class ProjectController:
         updated_data = self.project_db_client.update_data({"id": project_id}, data)
         logger.info(f"Updated project with id {project_id}")
         return updated_data.data[0]
-    
+
     async def browse_projects(self):
         return self.project_db_client.sample_projects(20).data

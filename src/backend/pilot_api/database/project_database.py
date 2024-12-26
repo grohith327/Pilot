@@ -15,7 +15,6 @@ class ProjectDbClient(BaseDbClient):
         return (
             self.supabase_client.table(self.table_name)
             .select("*")
-            .order("RANDOM()")
             .limit(sample_size)
             .execute()
         )

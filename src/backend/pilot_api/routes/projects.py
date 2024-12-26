@@ -27,6 +27,11 @@ async def create_project(project_create_request: ProjectCreateRequest):
     return await project_controller.create_project(project_create_request)
 
 
+@router.get("/browse")
+async def browse_projects():
+    return await project_controller.browse_projects()
+
+
 @router.get("/{project_id}")
 async def get_project(project_id: str):
     return await project_controller.get_project(project_id)
@@ -47,8 +52,3 @@ async def record_action(project_id: str, record_action_request: RecordActionRequ
     return await project_controller.record_action(
         project_id, record_action_request.element_id, record_action_request.success
     )
-
-
-@router.get("/browse")
-async def browse_projects():
-    return await project_controller.browse_projects()

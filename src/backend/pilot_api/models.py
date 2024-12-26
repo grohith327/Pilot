@@ -19,7 +19,7 @@ class Element(BaseModel):
 class ElementCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
-    status: Optional[str] = ElementStatus.ACTIVE
+    status: Optional[str] = "Active"
     project_id: Optional[str] = None
 
 
@@ -44,7 +44,7 @@ class ProjectCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
     elements: List[ElementCreateRequest] = []
-    status: Optional[str] = ProjectStatus.ACTIVE
+    status: Optional[str] = "Active"
 
 
 class ProjectUpdateRequest(BaseModel):
