@@ -19,6 +19,14 @@ class ElementDbClient(BaseDbClient):
             .execute()
         )
 
+    def fetch_with_filters(self, key: str, filter: str):
+        return (
+            self.supabase_client.table(self.table_name)
+            .select("*")
+            .eq(key, filter)
+            .execute()
+        )
+
     def update_data(self, query, data):
         return (
             self.supabase_client.table(self.table_name)

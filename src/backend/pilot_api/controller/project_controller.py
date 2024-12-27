@@ -88,8 +88,10 @@ class ProjectController:
             raise HTTPException(status_code=404, detail="Project not found")
         logger.info(f"Fetched project with id {project_id}")
 
-        # TODO: Fetch elements and add it to the project data
-        return project_data.data[0]
+        elements = self.element_db_client.fetch_with_filters("project_id", project_id)
+        result = project_data.data[0]
+        result["elements"] = elements.data
+        return result
 
     async def get_recommendation(self, project_id: str):
         model = self.model_manager.get_model(project_id)

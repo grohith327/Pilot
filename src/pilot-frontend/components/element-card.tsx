@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -6,16 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { formatDate } from "@/lib/utils"
 
 interface ElementCardProps {
   id: number
   name: string
   description: string
   status: string
-  creationDate: string
-  lastModifiedDate: string
+  creation_time: string
+  last_updated_time: string
   impression: number
-  successRate: number
+  success_rate: number
 }
 
 export function ElementCard(props: ElementCardProps) {
@@ -27,7 +30,7 @@ export function ElementCard(props: ElementCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-gray-500">
-          Last Updated Date: {props.lastModifiedDate}
+          Last Updated Date: {formatDate(props.last_updated_time)}
         </p>
         <div className="flex justify-between">
           <span
