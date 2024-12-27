@@ -165,4 +165,4 @@ class ProjectController:
         return updated_data.data[0]
 
     async def browse_projects(self):
-        return self.project_db_client.sample_projects(20).data
+        return {"projects": self.project_db_client.sample_projects(20).data}

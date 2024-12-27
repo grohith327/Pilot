@@ -14,7 +14,7 @@ class ProjectDbClient(BaseDbClient):
     def sample_projects(self, sample_size: int):
         return (
             self.supabase_client.table(self.table_name)
-            .select("*")
+            .select("id, name, description, status, creation_time, last_updated_time")
             .limit(sample_size)
             .execute()
         )

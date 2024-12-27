@@ -14,60 +14,18 @@ import {
 } from "@/components/ui/table"
 import ProjectSearchFilter from "@/components/project-search-filter"
 import { SearchBar } from "@/components/search-bar"
+import { API_URL } from "@/lib/utils"
+import { useEffect, useState } from "react"
 
 export default function Home() {
   const router = useRouter()
-  const results = [
-    {
-      id: 1,
-      name: "Project Alpha",
-      description: "A revolutionary new software for project management",
-      status: "Active",
-      creationDate: "2023-06-15",
-      lastModifiedDate: "2023-06-15",
-    },
-    {
-      id: 2,
-      name: "Task Tracker Pro",
-      description: "Advanced task tracking application for teams",
-      status: "Inactive",
-      creationDate: "2023-05-22",
-      lastModifiedDate: "2023-06-15",
-    },
-    {
-      id: 3,
-      name: "Data Analyzer X",
-      description: "Powerful data analysis tool for businesses",
-      status: "Inactive",
-      creationDate: "2023-04-30",
-      lastModifiedDate: "2023-06-15",
-    },
-    {
-      id: 4,
-      name: "Cloud Storage Solution",
-      description: "Secure and scalable cloud storage for enterprises",
-      status: "Active",
-      creationDate: "2023-06-01",
-      lastModifiedDate: "2023-06-15",
-    },
-    {
-      id: 5,
-      name: "AI Assistant",
-      description: "Intelligent virtual assistant powered by machine learning",
-      status: "Inactive",
-      creationDate: "2023-06-10",
-      lastModifiedDate: "2023-06-15",
-    },
-  ]
+  const [results, setResults] = useState<any[]>([])
 
-  // Duplicate the items in results to have more data for testing
-  const resultsWithDuplicates = [
-    ...results,
-    ...results,
-    ...results,
-    ...results,
-    ...results,
-  ]
+  useEffect(() => {
+    fetch(`${API_URL}/projects/browse`)
+      .then((response) => response.json())
+      .then((data) => setResults(data.projects))
+  }, [])
 
   const onProjectClick = (id: number) => {
     router.push(`/projects/${id}`)
@@ -98,7 +56,7 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {resultsWithDuplicates.map((item) => (
+              {results.map((item: any) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell className="hidden md:table-cell">
@@ -109,12 +67,15 @@ export default function Home() {
                       variant={
                         item.status === "Active" ? "default" : "secondary"
                       }
+                      className={
+                        item.status === "Active" ? "bg-green-500 hover:bg-green-600" : ""
+                      }
                     >
                       {item.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>{item.creationDate}</TableCell>
-                  <TableCell>{item.lastModifiedDate}</TableCell>
+                  <TableCell>{item.creation_time}</TableCell>
+                  <TableCell>{item.last_updated_time}</TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="secondary"
