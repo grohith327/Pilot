@@ -157,6 +157,8 @@ class ProjectController:
             data["name"] = project_update_request.name
         if not is_string_empty(project_update_request.description):
             data["description"] = project_update_request.description
+        if not is_string_empty(project_update_request.status):
+            data["status"] = project_update_request.status
 
         if len(data) == 0:
             raise HTTPException(status_code=400, detail="No fields to update")

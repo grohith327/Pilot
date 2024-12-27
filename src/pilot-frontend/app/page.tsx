@@ -1,7 +1,9 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
+import { API_URL } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,8 +16,6 @@ import {
 } from "@/components/ui/table"
 import ProjectSearchFilter from "@/components/project-search-filter"
 import { SearchBar } from "@/components/search-bar"
-import { API_URL } from "@/lib/utils"
-import { useEffect, useState } from "react"
 
 export default function Home() {
   const router = useRouter()
@@ -23,7 +23,12 @@ export default function Home() {
 
   useEffect(() => {
     fetch(`${API_URL}/projects/browse`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        return response.json()
+      })
       .then((data) => setResults(data.projects))
   }, [])
 
@@ -68,7 +73,9 @@ export default function Home() {
                         item.status === "Active" ? "default" : "secondary"
                       }
                       className={
-                        item.status === "Active" ? "bg-green-500 hover:bg-green-600" : ""
+                        item.status === "Active"
+                          ? "bg-green-500 hover:bg-green-600"
+                          : ""
                       }
                     >
                       {item.status}

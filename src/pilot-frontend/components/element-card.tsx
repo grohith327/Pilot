@@ -1,5 +1,6 @@
 "use client"
 
+import { formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { formatDate } from "@/lib/utils"
 
 interface ElementCardProps {
   id: number
@@ -19,6 +19,7 @@ interface ElementCardProps {
   last_updated_time: string
   impression: number
   success_rate: number
+  updateElementStatus: (elementId: string, status: string) => void
 }
 
 export function ElementCard(props: ElementCardProps) {
@@ -41,7 +42,17 @@ export function ElementCard(props: ElementCardProps) {
             {props.status === "Active" ? "Active" : "Inactive"}
           </span>
           <div className="flex justify-end">
-            <Button variant="outline" size="sm" className="rounded-xl">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl"
+              onClick={() =>
+                props.updateElementStatus(
+                  props.id.toString(),
+                  props.status === "Active" ? "Inactive" : "Active"
+                )
+              }
+            >
               {props.status === "Active" ? "Deactivate" : "Activate"}
             </Button>
           </div>
