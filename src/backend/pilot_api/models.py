@@ -20,7 +20,7 @@ class ElementCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
     status: Optional[str] = "Inactive"
-    project_id: str
+    project_id: Optional[str] = None
 
 
 class ElementUpdateRequest(BaseModel):

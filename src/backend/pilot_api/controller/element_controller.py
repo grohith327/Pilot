@@ -50,6 +50,13 @@ class ElementController:
             "success_rate": 0,
         }
         self.element_db_client.insert_data(data)
+        self.project_db_client.update_data(
+            {"id": element_create_request.project_id},
+            {
+                "last_updated_time": current_time,
+                "elements": project_data.data[0]["elements"] + [data["id"]],
+            },
+        )
         logger.info(f"Created element with id {data['id']}")
         return {"data": data}
 

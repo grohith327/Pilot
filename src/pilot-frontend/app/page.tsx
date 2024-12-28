@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
-import { API_URL } from "@/lib/utils"
+import { API_URL, formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,8 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import ProjectSearchFilter from "@/components/project-search-filter"
-import { SearchBar } from "@/components/search-bar"
 
 export default function Home() {
   const router = useRouter()
@@ -39,14 +37,20 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center w-screen mt-8">
       <main className="min-h-screen bg-background">
-        <ProjectSearchFilter />
-        <div className="p-4 ml-64">
+        {/* 
+        TODO: Add filtering logic and uncomment the code below
+        <ProjectSearchFilter /> 
+        */}
+        <div className="p-4">
+          {/* 
+          TODO: Add searching logic and uncomment the code below
           <div className="flex justify-center">
             <SearchBar />
             <Button className="ml-4 rounded-xl" size="md" variant="outline">
               Search
             </Button>
-          </div>
+          </div> 
+          */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -81,8 +85,8 @@ export default function Home() {
                       {item.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>{item.creation_time}</TableCell>
-                  <TableCell>{item.last_updated_time}</TableCell>
+                  <TableCell>{formatDate(item.creation_time)}</TableCell>
+                  <TableCell>{formatDate(item.last_updated_time)}</TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="secondary"
