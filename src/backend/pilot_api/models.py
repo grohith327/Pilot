@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from pilot_api.utils import ElementStatus, ProjectStatus
+from pilot_api.utils import ElementStatus
 
 
 class Element(BaseModel):
@@ -19,8 +19,8 @@ class Element(BaseModel):
 class ElementCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
-    status: Optional[str] = "Active"
-    project_id: Optional[str] = None
+    status: Optional[str] = "Inactive"
+    project_id: str
 
 
 class ElementUpdateRequest(BaseModel):
@@ -44,7 +44,7 @@ class ProjectCreateRequest(BaseModel):
     name: str
     description: Optional[str] = None
     elements: List[ElementCreateRequest] = []
-    status: Optional[str] = "Active"
+    status: Optional[str] = "Inactive"
 
 
 class ProjectUpdateRequest(BaseModel):

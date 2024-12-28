@@ -119,14 +119,12 @@ class DynamicThompsonSampling(BanditAlgorithm):
             json_state = storage_client.read_file(MODEL_CHECKPOINT_BUCKET, load_path)
             state = json.loads(json_state.decode("utf-8"))
             model = cls(
-                elements={
-                    k: Element.from_dict(v) for k, v in state["elements"].items()
-                },
+                model_id=state["model_id"],
+                elements=[Element.from_dict(v) for v in state["elements"].values()],
                 storage_client=storage_client,
                 alpha=state["alpha"],
                 beta=state["beta"],
             )
-            model.model_id = state["model_id"]
             logger.info(f"Successfully loaded model checkpoint from {load_path}")
             return model
         except StorageException as e:

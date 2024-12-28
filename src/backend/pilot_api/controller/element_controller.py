@@ -51,7 +51,7 @@ class ElementController:
         }
         self.element_db_client.insert_data(data)
         logger.info(f"Created element with id {data['id']}")
-        return {"id": data["id"]}
+        return {"data": data}
 
     async def get_element(self, element_id: str):
         if is_string_empty(element_id) or not is_valid_uuid(element_id):

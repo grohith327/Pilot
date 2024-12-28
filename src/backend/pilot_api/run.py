@@ -39,14 +39,13 @@ model_manager = ModelManager.get_instance(storage_client, project_db_client)
 
 @app.on_event("startup")
 async def startup_event():
-    if STAGE != "devo":
-        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-        pk_response = supabase.table(PROJECTS_TABLE).select("id").execute()
-        logger.warning(f"Loading models for {len(pk_response.data)} projects")
-        for pk in pk_response.data:
-            logger.warning(f"Loading model for project {pk['id']}")
-            model_manager.load_model(pk["id"])
-        logger.warning("Successfully loaded models")
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    pk_response = supabase.table(PROJECTS_TABLE).select("id").execute()
+    logger.warning(f"Loading models for {len(pk_response.data)} projects")
+    for pk in pk_response.data:
+        logger.warning(f"Loading model for project {pk['id']}")
+        model_manager.load_model(pk["id"])
+    logger.warning("Successfully loaded models")
 
 
 origins = ["http://localhost:3000", "http://localhost:8000"]

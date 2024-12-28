@@ -2,22 +2,18 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { ChevronDownIcon } from "lucide-react"
 
 import { API_URL, formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
+import { CreateElementModal } from "@/components/create-element-modal"
 import { ElementCard } from "@/components/element-card"
 import { Loader } from "@/components/loader"
 
 export default function ProjectPage() {
   const [projectData, setProjectData] = useState<any>()
+  const [isCreateElementModalOpen, setIsCreateElementModalOpen] =
+    useState(false)
   const { id } = useParams()
 
   useEffect(() => {
@@ -42,6 +38,43 @@ export default function ProjectPage() {
       })
       .then((data) => {
         setProjectData({ ...projectData, status: status })
+      })
+  }
+
+  const handleSave = async (formData: {
+    name: string
+    description: string
+    status: string
+  }) => {
+    if (formData.name === "") {
+      // Add alert to show name is required
+      return
+    }
+
+    const elementData = {
+      ...formData,
+      project_id: id,
+    }
+
+    fetch(`${API_URL}/elements/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(elementData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        return response.json()
+      })
+      .then((data) => {
+        setIsCreateElementModalOpen(false)
+        setProjectData({
+          ...projectData,
+          elements: [...projectData.elements, data.data],
+        })
       })
   }
 
@@ -94,27 +127,26 @@ export default function ProjectPage() {
           <p className="text-sm text-gray-500 mt-2">
             Last Modified Date: {formatDate(projectData.last_updated_time)}
           </p>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button className="rounded-xl" size="smd" variant="secondary">
-                Actions <ChevronDownIcon className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Add Element</DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  updateProjectStatus(
-                    projectData.status === "Active" ? "Inactive" : "Active"
-                  )
-                }
-              >
-                {projectData.status === "Active"
-                  ? "Deactivate Project"
-                  : "Activate Project"}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center space-x-2">
+            <CreateElementModal
+              isOpen={isCreateElementModalOpen}
+              onClose={setIsCreateElementModalOpen}
+              onSave={handleSave}
+            />
+            <Button
+              variant="outline"
+              className="rounded-xl"
+              onClick={() =>
+                updateProjectStatus(
+                  projectData.status === "Active" ? "Inactive" : "Active"
+                )
+              }
+            >
+              {projectData.status === "Active"
+                ? "Deactivate Project"
+                : "Activate Project"}
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -31,7 +31,7 @@ export function ElementCard(props: ElementCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-gray-500">
-          Last Updated Date: {formatDate(props.last_updated_time)}
+          Last Modified Date: {formatDate(props.last_updated_time)}
         </p>
         <div className="flex justify-between">
           <span
