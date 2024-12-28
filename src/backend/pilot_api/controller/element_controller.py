@@ -9,17 +9,21 @@ from pilot_api.utils import (
 )
 from fastapi import HTTPException
 import logging
-
+from pilot_api.model.model_manager import ModelManager
 
 logger = logging.getLogger(__name__)
 
 
 class ElementController:
     def __init__(
-        self, element_db_client: ElementDbClient, project_db_client: ProjectDbClient
+        self,
+        element_db_client: ElementDbClient,
+        project_db_client: ProjectDbClient,
+        model_manager: ModelManager,
     ):
         self.element_db_client = element_db_client
         self.project_db_client = project_db_client
+        self.model_manager = model_manager
 
     async def create_element(self, element_create_request: ElementCreateRequest):
         if is_string_empty(element_create_request.name):
@@ -80,6 +84,13 @@ class ElementController:
         element_data = self.element_db_client.fetch_data({"id": element_id})
         if element_data is None or len(element_data.data) == 0:
             raise HTTPException(status_code=404, detail="Element not found")
+
+        model = self.model_manager.get_model(element_data.data[0]["project_id"])
+        if model is None:
+            raise HTTPException(status_code=500, detail="Model not found")
+
+        if element_update_request.status is not None:
+            model.update_element_status(element_id, element_update_request.status)
 
         current_time = get_current_time()
         data = {}

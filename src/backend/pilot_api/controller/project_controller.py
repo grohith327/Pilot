@@ -6,8 +6,6 @@ from pilot_api.utils import (
     generate_uuid,
     is_valid_uuid,
     get_current_time,
-    ProjectStatus,
-    ElementStatus,
 )
 from fastapi import HTTPException
 from pilot_api.model.model_manager import ModelManager
@@ -65,7 +63,7 @@ class ProjectController:
         )
         self.model_manager.add_model(project_id, model)
         model.save_checkpoint()
-        
+
         data = {
             "id": project_id,
             "name": project_create_request.name,
@@ -99,7 +97,7 @@ class ProjectController:
             raise HTTPException(status_code=500, detail="Model not found")
 
         project_data = await self.get_project(project_id)
-        if project_data["status"] != ProjectStatus.ACTIVE:
+        if project_data["status"] != "Active":
             raise HTTPException(status_code=400, detail="Project is not active")
 
         if len(project_data["elements"]) != len(model.elements):
@@ -118,11 +116,13 @@ class ProjectController:
             raise HTTPException(status_code=500, detail="Model not found")
 
         project_data = await self.get_project(project_id)
-        if project_data["status"] != ProjectStatus.ACTIVE:
+        if project_data["status"] != "Active":
             raise HTTPException(status_code=400, detail="Project is not active")
 
-        element_data = await self.get_element(element_id)
-        if element_data["status"] != ElementStatus.ACTIVE:
+        element_data = self.element_db_client.fetch_data({"id": element_id})
+        if element_data is None or len(element_data.data) == 0:
+            raise HTTPException(status_code=404, detail="Element not found")
+        if element_data.data[0]["status"] != "Active":
             raise HTTPException(status_code=400, detail="Element is not active")
 
         model.update(element_id, success)
