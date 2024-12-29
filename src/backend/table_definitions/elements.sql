@@ -5,10 +5,10 @@ create table
     last_updated_time timestamp without time zone not null,
     name text not null,
     description text null,
-    is_active boolean not null,
     success_rate real null,
     success_count bigint null,
     impression bigint null,
     project_id uuid not null,
+    status text not null,
     constraint elements_pkey primary key (id)
   ) tablespace pg_default;

@@ -7,5 +7,6 @@ create table
     description text null,
     elements text[] null,
     model_id uuid not null default gen_random_uuid (),
+    status text not null,
     constraint projects_pkey primary key (id)
   ) tablespace pg_default;
