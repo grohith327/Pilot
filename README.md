@@ -1,56 +1,40 @@
-<h1 align="center" style="border-bottom: none;">Pilot 🚀</h1>
-<p align="center" style="color: gray;">Open source platform for experimentation through online learning</p>
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
-## Setup
+## Getting Started
 
-**Pre-requisite**
+First, run the development server:
 
-- The backend is hosted through [Supabase](https://supabase.com/), you need to create a project and set the `SUPABASE_URL` and `SUPABASE_ANON_KEY` environment variables
-- There are two tables: `elements` and `projects`. The table definitions are location in the `src/backend/table_definitions` folder. You can use it to create the tables
-- The model checkpoint is stored in a Supabase storage bucket called `model_checkpoints` which must be created manually
-- Ensure the tables and storage bucket has the right RLS policy attached so that you can access them
-
-
-**Start server locally**
-
-```sh
-cd src/backend
-poetry run start-server
-cd ../pilot-frontend
+```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Navigate to [http:localhost:3000](http:localhost:3000) on your browser.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-<p>
-  <img src="assets/pilot-home-page.png" alt="Image 1" style="width:45%; margin-right:10px;">
-  <img src="assets/pilot-project-page.png" alt="Image 2" style="width:45%;">
-</p>
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-## API Definition
-```
-Project - Create a project which defines what you are trying to optimize/experiment. e.g. landing page, checkout flow etc. 
+[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-Element - Each project has few elements, each element identifies a specific component. e.g. landing page A, landing page B etc. 
-```
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
-Once you have created your project and elements created, you can make the following `GET` request to get a recommendation for a project. Note that each project and element is identified through an UUID
+This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-```
-GET <URL>/projects/<project id>/recommendation
-```
+## Learn More
 
-Based on the user behaviour, you can record a success or failure metric which will be used to update the model's priors. This can be achieved through a `POST` request
+To learn more about Next.js, take a look at the following resources:
 
-```
-POST <URL>/projects/<project id>/record-action
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
 
-{
-    "element_id": "<element id>" // The element shown to user, e.g. the landing page
-    "success": true/false // A success or failure value to capture how user reacted
-}
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Deploy on Vercel
 
-## Philosophy
-Rapid and continuous experimentation is the key to improving any product by learning from user behavior and understanding what the customers like. In the industry, A/B testing is the most common way to do this experimentation and iteration. This however, might not always be the best fit every time. For example, if you are looking to compare two different versions of your landing page, you would ideally run an A/B test to compare the two and pick the best performing (based on some metric). However, in the process of picking a generally performant landing page, you are ignoring factors such as demographics or seasonality that could have influenced your A/B test. A solution to this problem is an algorithm that can keep learning and adjust which page might work better at a given point in time for a given user. 
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
