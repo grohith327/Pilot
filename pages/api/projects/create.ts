@@ -1,21 +1,34 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "@/lib/constants";
+import { ProjectStatus, supabase } from "@/lib/constants";
+
+type ProjectCreateRequest = {
+  name: string;
+  description?: string;
+  status?: string;
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name, description } = req.body;
+  const { name, description, status } = req.body as ProjectCreateRequest;
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Sanitize input before storing in database
+  if (!name) {
+    return res.status(400).json({ error: "Name is a required field" });
+  }
+
+  const projectStatus = status || ProjectStatus.INACTIVE;
+
+  const project = { name, description, status: projectStatus };
   const { data, error } = await supabase
     .from("projects")
-    .insert({ name, description });
+    .insert(project)
+    .select();
 
   if (error) {
     return res.status(500).json({ error: error.message });
   }
 
-  return res.status(200).json(data);
+  return res.status(200).json(data[0]);
 }
