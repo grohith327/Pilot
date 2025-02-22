@@ -1,6 +1,8 @@
 <h1 align="center" style="border-bottom: none;">Pilot 🚀</h1>
 <p align="center" style="color: gray;">Open source platform for experimentation through online learning</p>
 
+<p align="center" style="color: yellow; font-style: italic;">🔧 Package update is in progress, Might not work as expected.</p>
+
 ## Setup
 
 **Pre-requisite**
