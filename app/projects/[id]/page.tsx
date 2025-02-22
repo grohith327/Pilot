@@ -14,7 +14,7 @@ export default function ProjectPage() {
   const [projectData, setProjectData] = useState<any>()
   const [isCreateElementModalOpen, setIsCreateElementModalOpen] =
     useState(false)
-  const { id } = useParams()
+  const id = "13234"
 
   useEffect(() => {
     fetch(`${API_URL}/projects/${id}`)
